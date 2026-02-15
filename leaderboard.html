@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Community Podium</title>
+<title>Live Leaderboard</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
 
@@ -23,17 +23,22 @@ body {
 }
 
 h1 {
-  font-size: 36px;
+  font-size: 38px;
   font-weight: 800;
+  margin-bottom: 10px;
+}
+
+.subtitle {
+  color: #9ca3af;
   margin-bottom: 40px;
 }
 
 .podium-entry {
-  padding: 25px;
-  margin: 20px 0;
-  border-radius: 18px;
-  font-size: 20px;
-  font-weight: 600;
+  padding: 28px;
+  margin: 18px 0;
+  border-radius: 20px;
+  font-size: 22px;
+  font-weight: 700;
   transition: 0.3s;
 }
 
@@ -55,19 +60,20 @@ h1 {
 .percent {
   display: block;
   font-size: 16px;
-  margin-top: 6px;
+  margin-top: 8px;
   font-weight: 500;
+}
+
+.loading {
+  font-size: 18px;
+  margin-top: 40px;
+  color: #9ca3af;
 }
 
 /* Mobile */
 @media (max-width: 600px) {
-  h1 {
-    font-size: 28px;
-  }
-  .podium-entry {
-    font-size: 18px;
-    padding: 18px;
-  }
+  h1 { font-size: 28px; }
+  .podium-entry { font-size: 18px; padding: 20px; }
 }
 </style>
 </head>
@@ -75,8 +81,12 @@ h1 {
 <body>
 
 <div class="container">
-  <h1>Community Podium Consensus</h1>
-  <div id="podium"></div>
+  <h1>Live Leaderboard</h1>
+  <div class="subtitle">Most Popular Podium Predictions</div>
+
+  <div id="podium">
+    <div class="loading">Loading...</div>
+  </div>
 </div>
 
 <script>
@@ -92,9 +102,15 @@ async function loadLeaderboard() {
   }
 });
 
+
     const data = await response.json();
     const records = data.records || [];
     const total = records.length;
+
+    if (total === 0) {
+      podiumDiv.innerHTML = "<div class='loading'>No submissions yet.</div>";
+      return;
+    }
 
     let firstCounts = {};
     let secondCounts = {};
@@ -130,16 +146,12 @@ async function loadLeaderboard() {
     }
 
     function percent(count) {
-      return total > 0
-        ? Math.round((count / total) * 100) + "%"
-        : "0%";
+      return Math.round((count / total) * 100) + "%";
     }
 
     const top1 = getTop(firstCounts);
     const top2 = getTop(secondCounts);
     const top3 = getTop(thirdCounts);
-
-    const podiumDiv = document.getElementById("podium");
 
     podiumDiv.innerHTML = `
       <div class="podium-entry podium-1">
@@ -159,7 +171,7 @@ async function loadLeaderboard() {
     `;
 
   } catch (error) {
-    document.getElementById("podium").innerHTML = "Error loading data.";
+    podiumDiv.innerHTML = "<div class='loading'>Unable to load leaderboard.</div>";
     console.error(error);
   }
 
@@ -171,3 +183,5 @@ loadPodium();
 
 </body>
 </html>
+
+

@@ -1,236 +1,188 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta charset="UTF-8">
-  <title>Olympic Winter Games – Women FS Prediction</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Olympic Winter Games – Women FS Prediction</title>
 
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
-  <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
 
 <style>
-  body {
-    font-family: 'Inter', sans-serif;
-    background: linear-gradient(135deg, #0f172a, #111827);
-    color: #f3f4f6;
-    margin: 0;
-  }
+body {
+  font-family: 'Inter', sans-serif;
+  background: linear-gradient(135deg, #0f172a, #111827);
+  color: #f3f4f6;
+  margin: 0;
+}
 
-  .container {
-    max-width: 900px;
-    margin: auto;
-    padding: 60px 25px;
-  }
+.container {
+  max-width: 900px;
+  margin: auto;
+  padding: 50px 20px 120px;
+}
 
-  .hero {
-    text-align: center;
-    margin-bottom: 50px;
-  }
+.hero {
+  text-align: center;
+  margin-bottom: 40px;
+}
 
-  .hero h1 {
-    font-size: 44px;
-    font-weight: 800;
-    margin-bottom: 12px;
-  }
+.hero h1 {
+  font-size: 42px;
+  font-weight: 800;
+  margin-bottom: 8px;
+}
 
-  .hero p {
-    color: #9ca3af;
-    font-size: 18px;
-  }
+.hero p {
+  color: #9ca3af;
+  font-size: 18px;
+}
 
-  .nav {
-    margin-top: 25px;
-    display: flex;
-    justify-content: center;
-    gap: 40px;
-  }
+.nav {
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+}
 
-  .nav-link {
-    text-decoration: none;
-    color: #f3f4f6;
-    font-weight: 600;
-    font-size: 18px;
-    border-bottom: 2px solid transparent;
-    padding-bottom: 4px;
-    transition: 0.2s;
-  }
+.nav-link {
+  text-decoration: none;
+  color: #f3f4f6;
+  font-weight: 600;
+  font-size: 17px;
+  border-bottom: 2px solid transparent;
+  padding-bottom: 4px;
+}
 
-  .nav-link:hover {
-    border-bottom: 2px solid #ec4899;
-  }
+.nav-link:hover {
+  border-bottom: 2px solid #ec4899;
+}
 
-  .card {
-    background: rgba(255,255,255,0.05);
-    backdrop-filter: blur(14px);
-    padding: 30px;
-    border-radius: 20px;
-    box-shadow: 0 10px 40px rgba(0,0,0,0.4);
-  }
+.card {
+  background: rgba(255,255,255,0.05);
+  backdrop-filter: blur(14px);
+  padding: 25px;
+  border-radius: 20px;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.4);
+}
 
-  input {
-    width: 100%;
-    padding: 14px;
-    border-radius: 10px;
-    border: none;
-    font-size: 16px;
-    margin-bottom: 25px;
-  }
+input {
+  width: 100%;
+  padding: 16px;
+  border-radius: 12px;
+  border: none;
+  font-size: 16px;
+  margin-bottom: 18px;
+}
 
-  .list-wrapper {
-    max-height: 550px;
-    overflow-y: auto;
-    padding-right: 6px;
-  }
+.search-wrapper {
+  position: relative;
+}
 
-  ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-  }
+.clear-btn {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: #9ca3af;
+  font-size: 16px;
+  cursor: pointer;
+}
 
-  li {
-    display: flex;
-    align-items: center;
-    padding: 16px;
-    margin: 10px 0;
-    border-radius: 14px;
-    background: rgba(255,255,255,0.07);
-    transition: 0.25s;
-  }
+.list-wrapper {
+  max-height: 500px;
+  overflow-y: auto;
+}
 
-  li:hover {
-    background: rgba(255,255,255,0.12);
-  }
+ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
 
-  .rank-number {
-    width: 50px;
-    font-weight: 800;
-    font-size: 20px;
-  }
+li {
+  display: flex;
+  align-items: center;
+  padding: 18px;
+  margin: 10px 0;
+  border-radius: 14px;
+  background: rgba(255,255,255,0.07);
+  transition: 0.25s;
+}
 
-  .flag {
-    width: 32px;
-    margin-right: 12px;
-  }
+li:hover {
+  background: rgba(255,255,255,0.12);
+}
 
-  .skater-name {
-    flex-grow: 1;
-    font-weight: 500;
-  }
+.rank-number {
+  width: 45px;
+  font-weight: 800;
+  font-size: 20px;
+}
 
-  button {
-    width: 100%;
-    padding: 16px;
-    margin-top: 30px;
-    border-radius: 14px;
-    border: none;
-    font-size: 17px;
-    font-weight: 600;
-    background: linear-gradient(90deg, #ec4899, #8b5cf6);
-    color: white;
-    cursor: pointer;
-    transition: 0.2s;
-  }
+.flag {
+  margin-right: 10px;
+  font-size: 22px;
+}
 
-  button:hover {
-    opacity: 0.9;
-  }
+.skater-name {
+  flex-grow: 1;
+  font-weight: 600;
+  font-size: 17px;
+}
 
-  button:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-  }
-
-  /* Podium Styling */
-  .podium-1 {
-    background: linear-gradient(90deg, #facc15, #fde047);
-    color: black;
-    transform: scale(1.02);
-  }
-
-  .podium-2 {
-    background: linear-gradient(90deg, #e5e7eb, #d1d5db);
-    color: black;
-  }
-
-  .podium-3 {
-    background: linear-gradient(90deg, #d97706, #f59e0b);
-    color: black;
-  }
-
-  .success-screen {
-    text-align: center;
-    padding-top: 120px;
-  }
-
-  .success-screen h2 {
-    font-size: 30px;
-    margin-bottom: 10px;
-  }
-  /* ---------------- MOBILE RESPONSIVE ---------------- */
-
-@media (max-width: 768px) {
-
-  .container {
-    padding: 30px 16px;
-  }
-
-  .hero h1 {
-    font-size: 30px;
-  }
-
-  .hero p {
-    font-size: 15px;
-  }
-
-  .nav {
-    flex-direction: column;
-    gap: 10px;
-  }
-
-  .nav-link {
-    font-size: 16px;
-  }
-
-  .card {
-    padding: 20px;
-  }
-
-  input {
-    font-size: 15px;
-    padding: 12px;
-  }
-
-  .list-wrapper {
-    max-height: none;
-  }
-
-  li {
-    padding: 14px;
-    margin: 8px 0;
-  }
-
-  .rank-number {
-    width: 36px;
-    font-size: 16px;
-  }
-
-  .flag {
-    font-size: 20px;
-    margin-right: 8px;
-  }
-
-  .skater-name {
-    font-size: 15px;
-  }
-
-  button {
-    font-size: 16px;
-    padding: 14px;
-  }
-
+button {
+  width: 100%;
+  padding: 18px;
+  margin-top: 30px;
+  border-radius: 14px;
+  border: none;
+  font-size: 18px;
+  font-weight: 700;
+  background: linear-gradient(90deg, #ec4899, #8b5cf6);
+  color: white;
+  cursor: pointer;
 }
 
 
+/* Podium Styling */
+.podium-1 {
+  background: linear-gradient(90deg, #facc15, #fde047);
+  color: black;
+}
+
+.podium-2 {
+  background: linear-gradient(90deg, #e5e7eb, #d1d5db);
+  color: black;
+}
+
+.podium-3 {
+  background: linear-gradient(90deg, #d97706, #f59e0b);
+  color: black;
+}
+
+/* -------- MOBILE -------- */
+@media (max-width: 768px) {
+
+  .hero h1 {
+    font-size: 28px;
+  }
+
+  .hero p {
+    font-size: 15px;
+  }
+
+  .skater-name {
+    font-size: 20px;  /* BIG mobile names */
+  }
+
+  li {
+    padding: 20px;
+  }
+
+}
 </style>
 </head>
 
@@ -240,7 +192,7 @@
 
   <div class="hero">
     <h1>Olympic Winter Games</h1>
-    <p>Women’s Podium Predictions ⛸️ Women Of FS</p>
+    <p>Women’s Podium Predictions ⛸️</p>
 
     <div class="nav">
       <a href="index.html" class="nav-link">Predict</a>
@@ -253,9 +205,9 @@
     <input id="username" placeholder="Enter your name" />
 
     <div class="list-wrapper">
-      <ul id="skaterList">
+     <ul id="skaterList">
 
-        <li><span class="rank-number"></span><span class="flag">🇯🇵</span><span class="skater-name">Kaori Sakamoto</span></li>
+<li><span class="rank-number"></span><span class="flag">🇯🇵</span><span class="skater-name">Kaori Sakamoto</span></li>
 <li><span class="rank-number"></span><span class="flag">🇯🇵</span><span class="skater-name">Ami Nakai</span></li>
 <li><span class="rank-number"></span><span class="flag">🇺🇸</span><span class="skater-name">Alysa Liu</span></li>
 <li><span class="rank-number"></span><span class="flag">🇰🇷</span><span class="skater-name">Haein Lee</span></li>
@@ -285,23 +237,24 @@
 <li><span class="rank-number"></span><span class="flag">🇬🇧</span><span class="skater-name">Kristen Spours</span></li>
 <li><span class="rank-number"></span><span class="flag">🇱🇹</span><span class="skater-name">Meda Variakojyte</span></li>
 
+</ul>
 
-      </ul>
     </div>
-
-    <button id="submitBtn" onclick="submitRanking()">Submit Prediction</button>
 
   </div>
 </div>
 
+<button id="submitBtn" onclick="submitRanking()">Submit Prediction</button>
+
 <script>
+
 function updateRanks() {
   const items = document.querySelectorAll("#skaterList li");
 
   items.forEach((item, index) => {
     item.querySelector(".rank-number").innerText = index + 1;
 
-    item.classList.remove("podium-1", "podium-2", "podium-3");
+    item.classList.remove("podium-1","podium-2","podium-3");
 
     if (index === 0) item.classList.add("podium-1");
     if (index === 1) item.classList.add("podium-2");
@@ -317,20 +270,18 @@ new Sortable(document.getElementById('skaterList'), {
   onEnd: updateRanks
 });
 
-
 updateRanks();
 
-async function submitRanking() {
-  const username = document.getElementById("username").value;
-  const button = document.getElementById("submitBtn");
 
+/* -------- SUBMIT -------- */
+
+async function submitRanking() {
+
+  const username = document.getElementById("username").value;
   if (!username) {
     alert("Please enter your name.");
     return;
   }
-
-  button.disabled = true;
-  button.innerText = "Submitting...";
 
   const items = document.querySelectorAll("#skaterList li");
   let ranking = "";
@@ -340,16 +291,20 @@ async function submitRanking() {
   });
 
   const response = await fetch("https://api.airtable.com/v0/appqinDjW4HCVjwQY/tblC0xM9xKI27YkXX", { method: "POST", headers: { "Authorization": "Bearer patndpbY9QOFEzASh.2e1e8e15b2ad636ccda008f09a20abc4419a639f2e36beea1497ccfb852f9afe", "Content-Type": "application/json" }, body: JSON.stringify({ fields: { "User Name": username, "Ranking Order": ranking } }) });
+    body: JSON.stringify({
+      fields: {
+        "User Name": username,
+        "Ranking Order": ranking
+      }
+    })
+};
 
   if (response.ok) {
-  window.location.href = "leaderboard.html";
-
+    window.location.href = "leaderboard.html";
   } else {
     alert("Submission failed.");
-    button.disabled = false;
-    button.innerText = "Submit Prediction";
   }
-}
+
 </script>
 
 </body>

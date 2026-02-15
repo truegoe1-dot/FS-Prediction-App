@@ -157,7 +157,9 @@ async function loadLeaderboard() {
     const top1 = getTop(firstCounts);
     const top2 = getTop(secondCounts);
     const top3 = getTop(thirdCounts);
-
+    const top4 = getTop(fourthCounts);
+    const top5 = getTop(fifthCounts);
+ 
     podiumDiv.innerHTML = `
   <div class="podium-entry podium-1">
     🥇 ${top1 ? top1[0] : "-"}

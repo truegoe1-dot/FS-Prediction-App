@@ -183,6 +183,19 @@ button {
   }
 
 }
+.sortable-ghost {
+  opacity: 1 !important;
+  background: rgba(255,255,255,0.12) !important;
+}
+
+.sortable-chosen {
+  opacity: 1 !important;
+}
+
+.sortable-drag {
+  opacity: 1 !important;
+}
+
 </style>
 </head>
 
@@ -264,11 +277,18 @@ function updateRanks() {
 
 new Sortable(document.getElementById('skaterList'), {
   animation: 200,
-  delay: 100,
+  delay: 120,
   delayOnTouchOnly: true,
   touchStartThreshold: 5,
+  ghostClass: "sortable-ghost",
+  chosenClass: "sortable-chosen",
+  dragClass: "sortable-drag",
+  fallbackOnBody: true,
+  forceFallback: false,
+  removeCloneOnHide: true,
   onEnd: updateRanks
 });
+
 
 updateRanks();
 
@@ -287,17 +307,35 @@ async function submitRanking() {
   let ranking = "";
 
   items.forEach((item, index) => {
-    ranking += (index + 1) + ". " + item.querySelector(".skater-name").innerText + "\n";
+    ranking += (index + 1) + ". " +
+      item.querySelector(".skater-name").innerText + "\n";
   });
 
-  const response = await fetch("https://api.airtable.com/v0/appqinDjW4HCVjwQY/tblC0xM9xKI27YkXX", { method: "POST", headers: { "Authorization": "Bearer patndpbY9QOFEzASh.2e1e8e15b2ad636ccda008f09a20abc4419a639f2e36beea1497ccfb852f9afe", "Content-Type": "application/json" }, body: JSON.stringify({ fields: { "User Name": username, "Ranking Order": ranking } }) });
-    body: JSON.stringify({
-      fields: {
-        "User Name": username,
-        "Ranking Order": ranking
-      }
-    })
-};
+  try {
+    const response = await fetch("https://api.airtable.com/v0/appqinDjW4HCVjwQY/tblC0xM9xKI27YkXX", {
+      method: "POST",
+      headers: {
+        "Authorization": "Bearer patndpbY9QOFEzASh.2e1e8e15b2ad636ccda008f09a20abc4419a639f2e36beea1497ccfb852f9afe",
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        fields: {
+          "User Name": username,
+          "Ranking Order": ranking
+        }
+      })
+    });
+
+    if (response.ok) {
+      window.location.href = "leaderboard.html";
+    } else {
+      alert("Submission failed.");
+    }
+
+  } catch (error) {
+    alert("Network error.");
+  }
+}
 
   if (response.ok) {
     window.location.href = "leaderboard.html";

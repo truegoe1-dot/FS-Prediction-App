@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Olympic Winter Games – Leaderboard</title>
+<title>Community Podium</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
 
@@ -16,94 +16,25 @@ body {
 }
 
 .container {
-  max-width: 900px;
+  max-width: 700px;
   margin: auto;
-  padding: 60px 25px;
-}
-
-.hero {
+  padding: 60px 20px;
   text-align: center;
-  margin-bottom: 50px;
 }
 
-.hero h1 {
-  font-size: 44px;
+h1 {
+  font-size: 36px;
   font-weight: 800;
-  margin-bottom: 12px;
-}
-
-.hero p {
-  color: #9ca3af;
-  font-size: 18px;
-}
-
-.nav {
-  margin-top: 25px;
-  display: flex;
-  justify-content: center;
-  gap: 40px;
-}
-
-.nav-link {
-  text-decoration: none;
-  color: #f3f4f6;
-  font-weight: 600;
-  font-size: 18px;
-  border-bottom: 2px solid transparent;
-  padding-bottom: 4px;
-  transition: 0.2s;
-}
-
-.nav-link:hover {
-  border-bottom: 2px solid #ec4899;
-}
-
-.card {
-  background: rgba(255,255,255,0.05);
-  backdrop-filter: blur(14px);
-  padding: 30px;
-  border-radius: 20px;
-  box-shadow: 0 10px 40px rgba(0,0,0,0.4);
   margin-bottom: 40px;
 }
 
-.section-title {
-  font-size: 24px;
-  font-weight: 700;
-  margin-bottom: 25px;
-}
-
-.leaderboard-entry {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 18px;
-  margin: 12px 0;
-  border-radius: 16px;
-  background: rgba(255,255,255,0.07);
-  border: 1px solid rgba(255,255,255,0.05);
-  transition: 0.25s;
-}
-
-.leaderboard-entry:hover {
-  background: rgba(255,255,255,0.12);
-}
-
-.position {
-  width: 60px;
-  font-size: 22px;
-  font-weight: 800;
-}
-
-.username {
-  flex-grow: 1;
-  font-size: 18px;
+.podium-entry {
+  padding: 25px;
+  margin: 20px 0;
+  border-radius: 18px;
+  font-size: 20px;
   font-weight: 600;
-}
-
-.submitted {
-  font-size: 14px;
-  color: #9ca3af;
+  transition: 0.3s;
 }
 
 .podium-1 {
@@ -121,60 +52,22 @@ body {
   color: black;
 }
 
-.loading {
-  text-align: center;
-  font-size: 18px;
-  padding: 40px 0;
-  color: #9ca3af;
+.percent {
+  display: block;
+  font-size: 16px;
+  margin-top: 6px;
+  font-weight: 500;
 }
 
-/* -------- MOBILE -------- */
-
-@media (max-width: 768px) {
-
-  .container {
-    padding: 30px 16px;
+/* Mobile */
+@media (max-width: 600px) {
+  h1 {
+    font-size: 28px;
   }
-
-  .hero h1 {
-    font-size: 30px;
-  }
-
-  .hero p {
-    font-size: 15px;
-  }
-
-  .nav {
-    gap: 20px;
-  }
-
-  .nav-link {
-    font-size: 16px;
-  }
-
-  .card {
-    padding: 20px;
-  }
-
-  .leaderboard-entry {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 6px;
-  }
-
-  .position {
+  .podium-entry {
     font-size: 18px;
-    width: auto;
+    padding: 18px;
   }
-
-  .username {
-    font-size: 16px;
-  }
-
-  .submitted {
-    font-size: 13px;
-  }
-
 }
 </style>
 </head>
@@ -182,21 +75,8 @@ body {
 <body>
 
 <div class="container">
-
-  <div class="hero">
-    <h1>Live Leaderboard</h1>
-    <p>Women’s Free Skate Prediction</p>
-
-    <div class="nav">
-      <a href="index.html" class="nav-link">Predict</a>
-      <a href="leaderboard.html" class="nav-link">Leaderboard</a>
-    </div>
-  </div>
-
-  <div id="leaderboard-container">
-    <div class="loading">Loading predictions...</div>
-  </div>
-
+  <h1>Community Podium Consensus</h1>
+  <div id="podium"></div>
 </div>
 
 <script>
@@ -212,59 +92,80 @@ async function loadLeaderboard() {
   }
 });
 
-    if (!response.ok) {
-      throw new Error("Airtable request failed");
-    }
-
     const data = await response.json();
-    const records = (data.records || []).reverse();
-    const container = document.getElementById("leaderboard-container");
+    const records = data.records || [];
+    const total = records.length;
 
-    container.innerHTML = "";
+    let firstCounts = {};
+    let secondCounts = {};
+    let thirdCounts = {};
 
-    if (records.length === 0) {
-      container.innerHTML = "<div class='loading'>No submissions yet.</div>";
-      return;
-    }
+    records.forEach(record => {
 
-    // ----- Submissions Card -----
+      const ranking = record.fields["Ranking Order"];
+      if (!ranking) return;
 
-    const submissionsCard = document.createElement("div");
-    submissionsCard.className = "card";
-    submissionsCard.innerHTML = `<div class="section-title">All Submissions</div>`;
+      const lines = ranking.split("\n");
 
-    records.forEach((record, index) => {
+      if (lines[0]) {
+        const name = lines[0].replace("1. ", "").trim();
+        firstCounts[name] = (firstCounts[name] || 0) + 1;
+      }
 
-      const entry = document.createElement("div");
-      entry.className = "leaderboard-entry";
+      if (lines[1]) {
+        const name = lines[1].replace("2. ", "").trim();
+        secondCounts[name] = (secondCounts[name] || 0) + 1;
+      }
 
-      const name = record.fields["User Name"] && record.fields["User Name"].trim() !== ""
-        ? record.fields["User Name"]
-        : "Guest";
-
-      entry.innerHTML = `
-        <div class="position">#${index + 1}</div>
-        <div class="username">${name}</div>
-        <div class="submitted">
-          ${new Date(record.createdTime).toLocaleString()}
-        </div>
-      `;
-
-      submissionsCard.appendChild(entry);
+      if (lines[2]) {
+        const name = lines[2].replace("3. ", "").trim();
+        thirdCounts[name] = (thirdCounts[name] || 0) + 1;
+      }
 
     });
 
-    container.appendChild(submissionsCard);
+    function getTop(counts) {
+      return Object.entries(counts)
+        .sort((a, b) => b[1] - a[1])[0];
+    }
+
+    function percent(count) {
+      return total > 0
+        ? Math.round((count / total) * 100) + "%"
+        : "0%";
+    }
+
+    const top1 = getTop(firstCounts);
+    const top2 = getTop(secondCounts);
+    const top3 = getTop(thirdCounts);
+
+    const podiumDiv = document.getElementById("podium");
+
+    podiumDiv.innerHTML = `
+      <div class="podium-entry podium-1">
+        🥇 ${top1 ? top1[0] : "-"}
+        <span class="percent">${top1 ? percent(top1[1]) + " picked 1st" : ""}</span>
+      </div>
+
+      <div class="podium-entry podium-2">
+        🥈 ${top2 ? top2[0] : "-"}
+        <span class="percent">${top2 ? percent(top2[1]) + " picked 2nd" : ""}</span>
+      </div>
+
+      <div class="podium-entry podium-3">
+        🥉 ${top3 ? top3[0] : "-"}
+        <span class="percent">${top3 ? percent(top3[1]) + " picked 3rd" : ""}</span>
+      </div>
+    `;
 
   } catch (error) {
-    document.getElementById("leaderboard-container").innerHTML =
-      "<div class='loading'>Error loading leaderboard.</div>";
+    document.getElementById("podium").innerHTML = "Error loading data.";
     console.error(error);
   }
 
 }
 
-loadLeaderboard();
+loadPodium();
 
 </script>
 

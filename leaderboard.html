@@ -93,6 +93,9 @@ h1 {
 
 async function loadLeaderboard() {
 
+    const podiumDiv = document.getElementById("podium");
+
+
   try {
 
     const response = await fetch("https://api.airtable.com/v0/appqinDjW4HCVjwQY/tblC0xM9xKI27YkXX", {

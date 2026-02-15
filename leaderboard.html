@@ -33,6 +33,19 @@ h1 {
   margin-bottom: 40px;
 }
 
+.nav-link {
+  text-decoration: none;
+  color: #f3f4f6;
+  font-weight: 600;
+  font-size: 17px;
+  border-bottom: 2px solid transparent;
+  padding-bottom: 4px;
+}
+
+.nav-link:hover {
+  border-bottom: 2px solid #ec4899;
+}
+
 .podium-entry {
   padding: 28px;
   margin: 18px 0;
@@ -83,6 +96,12 @@ h1 {
 <div class="container">
   <h1>Live Leaderboard</h1>
   <div class="subtitle">Most Popular Podium Predictions</div>
+  
+ <div class="nav">
+      <a href="index.html" class="nav-link">Predict</a>
+      <a href="leaderboard.html" class="nav-link">Leaderboard</a>
+    </div>
+  </div>
 
   <div id="podium">
     <div class="loading">Loading...</div>

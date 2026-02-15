@@ -2,6 +2,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Olympic Winter Games – Leaderboard</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
@@ -80,6 +81,7 @@ body {
   margin: 12px 0;
   border-radius: 16px;
   background: rgba(255,255,255,0.07);
+  border: 1px solid rgba(255,255,255,0.05);
   transition: 0.25s;
 }
 
@@ -125,6 +127,55 @@ body {
   padding: 40px 0;
   color: #9ca3af;
 }
+
+/* -------- MOBILE -------- */
+
+@media (max-width: 768px) {
+
+  .container {
+    padding: 30px 16px;
+  }
+
+  .hero h1 {
+    font-size: 30px;
+  }
+
+  .hero p {
+    font-size: 15px;
+  }
+
+  .nav {
+    gap: 20px;
+  }
+
+  .nav-link {
+    font-size: 16px;
+  }
+
+  .card {
+    padding: 20px;
+  }
+
+  .leaderboard-entry {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+  }
+
+  .position {
+    font-size: 18px;
+    width: auto;
+  }
+
+  .username {
+    font-size: 16px;
+  }
+
+  .submitted {
+    font-size: 13px;
+  }
+
+}
 </style>
 </head>
 
@@ -161,7 +212,6 @@ async function loadLeaderboard() {
   }
 });
 
-
     if (!response.ok) {
       throw new Error("Airtable request failed");
     }
@@ -177,81 +227,7 @@ async function loadLeaderboard() {
       return;
     }
 
-    // -------- PODIUM ANALYSIS --------
-
-    let firstCounts = {};
-    let secondCounts = {};
-    let thirdCounts = {};
-
-    records.forEach(record => {
-
-      const ranking = record.fields["Ranking Order"];
-      if (!ranking) return;
-
-      const lines = ranking.split("\n");
-
-      if (lines[0]) {
-        const name = lines[0].replace("1. ", "").trim();
-        firstCounts[name] = (firstCounts[name] || 0) + 1;
-      }
-
-      if (lines[1]) {
-        const name = lines[1].replace("2. ", "").trim();
-        secondCounts[name] = (secondCounts[name] || 0) + 1;
-      }
-
-      if (lines[2]) {
-        const name = lines[2].replace("3. ", "").trim();
-        thirdCounts[name] = (thirdCounts[name] || 0) + 1;
-      }
-
-    });
-
-    function getTop(counts) {
-      return Object.entries(counts)
-        .sort((a, b) => b[1] - a[1])[0];
-    }
-
-    const total = records.length;
-
-    function percent(count) {
-      return Math.round((count / total) * 100) + "%";
-    }
-
-    const top1 = getTop(firstCounts);
-    const top2 = getTop(secondCounts);
-    const top3 = getTop(thirdCounts);
-
-    // -------- COMMUNITY PODIUM CARD --------
-
-    const podiumCard = document.createElement("div");
-    podiumCard.className = "card";
-
-    podiumCard.innerHTML = `
-      <div class="section-title">Community Podium Consensus</div>
-
-      <div class="leaderboard-entry podium-1">
-        <div class="position">🥇</div>
-        <div class="username">${top1 ? top1[0] : "-"}</div>
-        <div class="submitted">${top1 ? percent(top1[1]) + " picked 1st" : ""}</div>
-      </div>
-
-      <div class="leaderboard-entry podium-2">
-        <div class="position">🥈</div>
-        <div class="username">${top2 ? top2[0] : "-"}</div>
-        <div class="submitted">${top2 ? percent(top2[1]) + " picked 2nd" : ""}</div>
-      </div>
-
-      <div class="leaderboard-entry podium-3">
-        <div class="position">🥉</div>
-        <div class="username">${top3 ? top3[0] : "-"}</div>
-        <div class="submitted">${top3 ? percent(top3[1]) + " picked 3rd" : ""}</div>
-      </div>
-    `;
-
-    container.appendChild(podiumCard);
-
-    // -------- ALL SUBMISSIONS CARD --------
+    // ----- Submissions Card -----
 
     const submissionsCard = document.createElement("div");
     submissionsCard.className = "card";
@@ -262,9 +238,13 @@ async function loadLeaderboard() {
       const entry = document.createElement("div");
       entry.className = "leaderboard-entry";
 
+      const name = record.fields["User Name"] && record.fields["User Name"].trim() !== ""
+        ? record.fields["User Name"]
+        : "Guest";
+
       entry.innerHTML = `
         <div class="position">#${index + 1}</div>
-        <div class="username">${record.fields["User Name"] || "Anonymous"}</div>
+        <div class="username">${name}</div>
         <div class="submitted">
           ${new Date(record.createdTime).toLocaleString()}
         </div>
@@ -287,7 +267,6 @@ async function loadLeaderboard() {
 loadLeaderboard();
 
 </script>
-
 
 </body>
 </html>

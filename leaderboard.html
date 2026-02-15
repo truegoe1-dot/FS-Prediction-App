@@ -118,30 +118,32 @@ async function loadLeaderboard() {
     let firstCounts = {};
     let secondCounts = {};
     let thirdCounts = {};
+    let fourthCounts = {};
+    let fifthCounts = {};
+
 
     records.forEach(record => {
 
-      const ranking = record.fields["Ranking Order"];
-      if (!ranking) return;
+  const ranking = record.fields["Ranking Order"];
+  if (!ranking) return;
 
-      const lines = ranking.split("\n");
+  const lines = ranking.split("\n");
 
-      if (lines[0]) {
-        const name = lines[0].replace("1. ", "").trim();
-        firstCounts[name] = (firstCounts[name] || 0) + 1;
-      }
+  function countPosition(line, countsObj, prefix) {
+    if (line) {
+      const name = line.replace(prefix, "").trim();
+      countsObj[name] = (countsObj[name] || 0) + 1;
+    }
+  }
 
-      if (lines[1]) {
-        const name = lines[1].replace("2. ", "").trim();
-        secondCounts[name] = (secondCounts[name] || 0) + 1;
-      }
+  countPosition(lines[0], firstCounts, "1. ");
+  countPosition(lines[1], secondCounts, "2. ");
+  countPosition(lines[2], thirdCounts, "3. ");
+  countPosition(lines[3], fourthCounts, "4. ");
+  countPosition(lines[4], fifthCounts, "5. ");
 
-      if (lines[2]) {
-        const name = lines[2].replace("3. ", "").trim();
-        thirdCounts[name] = (thirdCounts[name] || 0) + 1;
-      }
+});
 
-    });
 
     function getTop(counts) {
       return Object.entries(counts)
@@ -157,21 +159,32 @@ async function loadLeaderboard() {
     const top3 = getTop(thirdCounts);
 
     podiumDiv.innerHTML = `
-      <div class="podium-entry podium-1">
-        🥇 ${top1 ? top1[0] : "-"}
-        <span class="percent">${top1 ? percent(top1[1]) + " picked 1st" : ""}</span>
-      </div>
+  <div class="podium-entry podium-1">
+    🥇 ${top1 ? top1[0] : "-"}
+    <span class="percent">${top1 ? percent(top1[1]) + " picked 1st" : ""}</span>
+  </div>
 
-      <div class="podium-entry podium-2">
-        🥈 ${top2 ? top2[0] : "-"}
-        <span class="percent">${top2 ? percent(top2[1]) + " picked 2nd" : ""}</span>
-      </div>
+  <div class="podium-entry podium-2">
+    🥈 ${top2 ? top2[0] : "-"}
+    <span class="percent">${top2 ? percent(top2[1]) + " picked 2nd" : ""}</span>
+  </div>
 
-      <div class="podium-entry podium-3">
-        🥉 ${top3 ? top3[0] : "-"}
-        <span class="percent">${top3 ? percent(top3[1]) + " picked 3rd" : ""}</span>
-      </div>
-    `;
+  <div class="podium-entry podium-3">
+    🥉 ${top3 ? top3[0] : "-"}
+    <span class="percent">${top3 ? percent(top3[1]) + " picked 3rd" : ""}</span>
+  </div>
+
+  <div class="podium-entry">
+    4️⃣ ${top4 ? top4[0] : "-"}
+    <span class="percent">${top4 ? percent(top4[1]) + " picked 4th" : ""}</span>
+  </div>
+
+  <div class="podium-entry">
+    5️⃣ ${top5 ? top5[0] : "-"}
+    <span class="percent">${top5 ? percent(top5[1]) + " picked 5th" : ""}</span>
+  </div>
+`;
+
 
   } catch (error) {
     podiumDiv.innerHTML = "<div class='loading'>Unable to load leaderboard.</div>";
